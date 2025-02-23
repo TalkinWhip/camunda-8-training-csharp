@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "RghIAhE2dmMNTjI6yLRfcq8LVYyPSBoSJ7MbbXc9aFI=",
+  "Source": "camunda-8-training-csharp",
+  "BasePath": "_content/camunda-8-training-csharp",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
