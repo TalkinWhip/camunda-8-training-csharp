@@ -3,6 +3,7 @@ using Zeebe.Client.Api.Responses;
 using Zeebe.Client.Api.Worker;
 using Newtonsoft.Json;
 using Camunda8Training.Services;
+using Camunda8Training.Exceptions;
 
 
 namespace Camunda8Training.Workers;
@@ -24,7 +25,12 @@ public class CreditCardChargingWorker : Worker {
         string expiryDate = variables["expiryDate"].ToString();
         double openAmount = Convert.ToDouble(variables["openAmount"]);
 
-        service.ChargeAmount(cardNumber, cvc, expiryDate, openAmount);
+        try {
+            service.ChargeAmount(cardNumber, cvc, expiryDate, openAmount);
+        } catch (InvalidCreditCardException e) {
+            client.NewFailCommand(activatedjob.Key).Retries(0).ErrorMessage(e.Message).Send();
+            return;
+        }
 
         client.NewCompleteJobCommand(activatedjob.Key).Send();   
 
