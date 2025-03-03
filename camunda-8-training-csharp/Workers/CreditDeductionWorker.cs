@@ -24,7 +24,7 @@ public class CreditDeductionWorker : Worker {
 
         double openAmount = customerService.DeductCredit(customerCredit, orderTotal);
         variables.Add("openAmount", openAmount);
-
+        
         string json = JsonConvert.SerializeObject(variables);
         client.NewCompleteJobCommand(activatedjob.Key).Variables(json).Send();   
     }
