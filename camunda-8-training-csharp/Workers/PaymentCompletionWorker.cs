@@ -16,9 +16,10 @@ namespace Camunda8Training.Workers {
       PrintProcessVariables(variables);
 
       string correlationKey = variables["orderId"].ToString();
+      string messageName = variables["messageName"].ToString();
       string json = JsonConvert.SerializeObject(variables);
 
-      client.NewPublishMessageCommand().MessageName("paymentCompletedMessage").CorrelationKey(correlationKey)
+      client.NewPublishMessageCommand().MessageName(messageName).CorrelationKey(correlationKey)
         .Variables(json).Send();
       jobClient.NewCompleteJobCommand(activatedjob).Send();
     }

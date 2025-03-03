@@ -28,6 +28,9 @@ public class CreditCardChargingWorker : Worker {
         try {
             service.ChargeAmount(cardNumber, cvc, expiryDate, openAmount);
         } catch (InvalidCreditCardException e) {
+            client.NewThrowErrorCommand(activatedjob.Key).ErrorCode("expiryDateInvalidError").ErrorMessage("Expiry date invalid").Send();
+            return;
+        } catch (Exception e) {
             client.NewFailCommand(activatedjob.Key).Retries(0).ErrorMessage(e.Message).Send();
             return;
         }
