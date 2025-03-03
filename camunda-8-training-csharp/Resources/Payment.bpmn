@@ -22,21 +22,21 @@
       <bpmn:outgoing>Flow_1pztzhb</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0mgtgv1" name="Yes" sourceRef="Gateway_0tguusb" targetRef="Gateway_1sc74ys">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=orderTotal &lt;= customerCredit</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=openAmount &lt;= 0</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_01h2mrh" name="Payment completed">
       <bpmn:incoming>Flow_1pztzhb</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1pztzhb" sourceRef="Gateway_1sc74ys" targetRef="Event_01h2mrh" />
-    <bpmn:sequenceFlow id="Flow_0hm4nsv" name="No" sourceRef="Gateway_0tguusb" targetRef="Activity_17cgxb1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=orderTotal &gt; customerCredit</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_0hm4nsv" name="No" sourceRef="Gateway_0tguusb" targetRef="Activity_0c3prt5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=openAmount &gt; 0</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1ly1cuh" sourceRef="Activity_17cgxb1" targetRef="Gateway_1sc74ys" />
     <bpmn:serviceTask id="Activity_17cgxb1" name="Charge credit card">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="credit-card-charging" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0hm4nsv</bpmn:incoming>
+      <bpmn:incoming>Flow_0akc1ya</bpmn:incoming>
       <bpmn:outgoing>Flow_1ly1cuh</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_06we2x6" name="Deduct credit">
@@ -46,6 +46,14 @@
       <bpmn:incoming>Flow_0yir2wn</bpmn:incoming>
       <bpmn:outgoing>Flow_1fag6do</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0akc1ya" sourceRef="Activity_0c3prt5" targetRef="Activity_17cgxb1" />
+    <bpmn:scriptTask id="Activity_0c3prt5" name="Add credit card fee">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=openAmount * 1.02" resultVariable="openAmount" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hm4nsv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0akc1ya</bpmn:outgoing>
+    </bpmn:scriptTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PaymentProcess">
@@ -61,20 +69,23 @@
           <dc:Bounds x="379" y="69" width="82" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15ytrgi_di" bpmnElement="Activity_06we2x6">
+        <dc:Bounds x="240" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1sc74ys_di" bpmnElement="Gateway_1sc74ys" isMarkerVisible="true">
-        <dc:Bounds x="655" y="93" width="50" height="50" />
+        <dc:Bounds x="715" y="93" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_01h2mrh_di" bpmnElement="Event_01h2mrh">
-        <dc:Bounds x="752" y="100" width="36" height="36" />
+        <dc:Bounds x="812" y="100" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="745" y="143" width="51" height="27" />
+          <dc:Bounds x="805" y="143" width="51" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_05xu7ho_di" bpmnElement="Activity_17cgxb1">
-        <dc:Bounds x="500" y="190" width="100" height="80" />
+        <dc:Bounds x="620" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_15ytrgi_di" bpmnElement="Activity_06we2x6">
-        <dc:Bounds x="240" y="78" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_04nkvh6_di" bpmnElement="Activity_0c3prt5">
+        <dc:Bounds x="470" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0yir2wn_di" bpmnElement="Flow_0yir2wn">
         <di:waypoint x="186" y="118" />
@@ -86,27 +97,31 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mgtgv1_di" bpmnElement="Flow_0mgtgv1">
         <di:waypoint x="445" y="118" />
-        <di:waypoint x="655" y="118" />
+        <di:waypoint x="715" y="118" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="541" y="100" width="18" height="14" />
+          <dc:Bounds x="571" y="100" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1pztzhb_di" bpmnElement="Flow_1pztzhb">
-        <di:waypoint x="705" y="118" />
-        <di:waypoint x="752" y="118" />
+        <di:waypoint x="765" y="118" />
+        <di:waypoint x="812" y="118" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0hm4nsv_di" bpmnElement="Flow_0hm4nsv">
         <di:waypoint x="420" y="143" />
         <di:waypoint x="420" y="230" />
-        <di:waypoint x="500" y="230" />
+        <di:waypoint x="470" y="230" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="428" y="184" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ly1cuh_di" bpmnElement="Flow_1ly1cuh">
-        <di:waypoint x="600" y="230" />
-        <di:waypoint x="680" y="230" />
-        <di:waypoint x="680" y="143" />
+        <di:waypoint x="720" y="230" />
+        <di:waypoint x="740" y="230" />
+        <di:waypoint x="740" y="143" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0akc1ya_di" bpmnElement="Flow_0akc1ya">
+        <di:waypoint x="570" y="230" />
+        <di:waypoint x="620" y="230" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
