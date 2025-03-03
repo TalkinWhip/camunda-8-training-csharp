@@ -7,9 +7,9 @@ namespace Camunda8Training {
   public class Program {
     private static IZeebeClient _client = CamundaCloudClientBuilder
     .Builder()
-      .UseClientId("9JkXtImZ3kDXy~J-7WsC3ovgy~Yf2P_M")
-      .UseClientSecret("BiHKk_rhBnZQO.OqPc2HjFXxZGhBlxginaf.Lj4rhLtCKNPCNywh22_44v-JzBwp")
-      .UseContactPoint("d399dce9-6cf6-43e0-9fbd-3c5d68995beb.bru-2.zeebe.camunda.io:443")
+      .UseClientId("XXX")
+      .UseClientSecret("XXX")
+      .UseContactPoint("XXX")
     .Build();
     
     public static void Main(string[] args) {
