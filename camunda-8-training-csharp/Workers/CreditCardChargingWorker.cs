@@ -16,17 +16,8 @@ public class CreditCardChargingWorker : Worker {
     public override void Handler(IJobClient jobClient, IJob activatedjob)
     {
         
-        var variables = JsonConvert.DeserializeObject<Dictionary<string, object>>(activatedjob.Variables);
-        CreditCardService service = new CreditCardService();
-
-        string cvc = variables["cvc"].ToString();
-        string cardNumber = variables["cardNumber"].ToString();
-        string expiryDate = variables["expiryDate"].ToString();
-        double openAmount = Convert.ToDouble(variables["openAmount"]);
-
-        service.ChargeAmount(cardNumber, cvc, expiryDate, openAmount);
-
-        client.NewCompleteJobCommand(activatedjob.Key).Send();   
+        Console.Out.WriteLine("Worker invoked: " + activatedjob.Type);
+        client.NewCompleteJobCommand(activatedjob.Key).Send(); 
 
     }
 }
